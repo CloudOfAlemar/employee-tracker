@@ -2,25 +2,27 @@
 /*
   Require Modules
 */
-const { promptTasks } = require( "./modules/inquirerPrompts" );
+const { promptTasks, viewAllDepartments } = require( "./modules/inquirerPrompts" );
 
-promptTasks()
-.then( answers => {
-  switch( answers.task ) {
-    case "View all Departments" :
-      return "VD";
-    case "View all Roles" :
-      return "VAR";
-    case "View all Employees" :
-      return "VAE";
-    case "Add a Department" :
-      return "AAD";
-    case "Update an Employee Role" :
-      return "UAER";
-    case "Quit" :
-      return "Quit";
-  }
-} )
-.then( data => {
-  console.log( data );
+const recursiveTasksPrompt = () => {
+  return new Promise( ( resolve, reject ) => {
+    promptTasks()
+    .then( answers => {
+      if( answers.task === "Quit" ) {
+        console.log( "Process finished..." );
+        resolve();
+      } else if( answers.task === "View all Departments" ) {
+        viewAllDepartments()
+        .then( rows => {
+          console.log( rows );
+          resolve( recursiveTasksPrompt() );
+        } );
+      }
+    });
+  } );
+}
+
+recursiveTasksPrompt()
+.then( () => {
+  process.exit();
 } );

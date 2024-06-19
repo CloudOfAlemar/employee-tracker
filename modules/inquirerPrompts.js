@@ -52,9 +52,15 @@ const promptTasks = function() {
   View all Departments
 */
 const viewAllDepartments = () => {
-
+  return new Promise( ( resolve, reject ) => {
+    pool.query( 'SELECT * FROM departments', ( error, { rows } ) => {
+      if( error ) reject( error );
+      resolve( rows );
+    } );
+  } );
 }
 
 module.exports = {
-  promptTasks
+  promptTasks,
+  viewAllDepartments
 }
