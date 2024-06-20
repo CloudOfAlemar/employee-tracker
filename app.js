@@ -2,7 +2,7 @@
 /*
   Require Modules
 */
-const { promptTasks, viewAllDepartments } = require( "./modules/inquirerPrompts" );
+const { promptTasks, viewAllDepartments, viewAllRoles } = require( "./modules/inquirerPrompts" );
 
 const recursiveTasksPrompt = () => {
   return new Promise( ( resolve, reject ) => {
@@ -13,8 +13,12 @@ const recursiveTasksPrompt = () => {
         resolve();
       } else if( answers.task === "View all Departments" ) {
         viewAllDepartments()
-        .then( rows => {
-          console.log( rows );
+        .then( () => {
+          resolve( recursiveTasksPrompt() );
+        } );
+      } else if( answers.task === "View all Roles" ) {
+        viewAllRoles()
+        .then( () => {
           resolve( recursiveTasksPrompt() );
         } );
       }

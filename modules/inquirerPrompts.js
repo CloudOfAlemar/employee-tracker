@@ -55,12 +55,30 @@ const viewAllDepartments = () => {
   return new Promise( ( resolve, reject ) => {
     pool.query( 'SELECT * FROM departments', ( error, { rows } ) => {
       if( error ) reject( error );
-      resolve( rows );
+      console.log( rows );
+      resolve();
     } );
+  } );
+}
+
+/*
+  View all Roles
+*/
+const viewAllRoles = () => {
+  return new Promise( ( resolve, reject ) => {
+    pool.query(
+      'SELECT roles.title AS job_title, roles.id AS role_id, departments.name AS department_name, roles.salary AS salary  FROM roles JOIN  departments ON roles.department = departments.id',
+      ( error, { rows } ) => {
+        if( error ) reject( error );
+        console.log( rows );
+        resolve();
+      }
+    );
   } );
 }
 
 module.exports = {
   promptTasks,
-  viewAllDepartments
+  viewAllDepartments,
+  viewAllRoles
 }
