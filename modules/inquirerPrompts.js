@@ -77,8 +77,27 @@ const viewAllRoles = () => {
   } );
 }
 
+/*
+  View all Employees
+*/
+const viewAllEmployees = () => {
+  return new Promise( ( resolve, reject ) => {
+    const queryString =
+    `SELECT e.id, e.first_name, e.last_name, r.title, d.name, r.salary, CONCAT( m.first_name, ' ', m.last_name ) AS manager
+    FROM employees e JOIN roles r ON e.role_id = r.id
+    JOIN departments d ON r.department = d.id
+    LEFT JOIN employees m ON e.manager_id = m.id`;
+    pool.query( queryString, ( error, { rows } ) => {
+      if( error ) reject( error );
+      console.log( rows );
+      resolve( rows );
+    } );
+  } );
+}
+
 module.exports = {
   promptTasks,
   viewAllDepartments,
-  viewAllRoles
+  viewAllRoles,
+  viewAllEmployees
 }
