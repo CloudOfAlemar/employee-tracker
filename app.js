@@ -9,7 +9,7 @@ const {
   viewAllEmployees,
   addDepartment,
   addRole
-} = require( "./modules/inquirerPrompts" );
+} = require( "./modules/functions" );
 
 /*
   Recursive Tasks Prompt
