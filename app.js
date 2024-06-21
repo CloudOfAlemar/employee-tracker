@@ -8,7 +8,8 @@ const {
   viewAllRoles,
   viewAllEmployees,
   addDepartment,
-  addRole
+  addRole,
+  addEmployee
 } = require( "./modules/functions" );
 
 /*
@@ -46,6 +47,11 @@ const recursiveTasksPrompt = () => {
         } );
       } else if( answers.task === "Add a Role" ) {
         addRole()
+        .then( () => {
+          resolve( recursiveTasksPrompt() );
+        } );
+      } else if( answers.task === "Add an Employee" ) {
+        addEmployee()
         .then( () => {
           resolve( recursiveTasksPrompt() );
         } );

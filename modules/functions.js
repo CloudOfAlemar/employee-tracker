@@ -190,11 +190,101 @@ const addRole = () => {
   } )
 }
 
+/*
+  Fetch all roles
+*/
+const fetchRoles = () => {
+  const queryString = `SELECT id, title FROM roles`;
+  return new Promise( ( resolve, reject ) => {
+    pool.query( queryString, ( error, { rows } ) => {
+      if( error ) reject( error );
+      resolve( rows );
+    } );
+  } );
+}
+
+/*
+  Fetch all employees that can be managers
+*/
+const fetchManagers = () => {
+  const queryString =
+  `SELECT id, CONCAT( first_name, ' ', last_name ) AS manager_name
+  FROM employees`;
+  return new Promise( ( resolve, reject ) => {
+    pool.query( queryString, ( error, { rows } ) => {
+      if( error ) reject( error );
+      resolve( rows );
+    } );
+  } );
+}
+
+/*
+  Add Employee
+    1). use fetchRoles and fetchManagers to assign the rolesInfo
+        and managersInfo variables
+    2). Create employee based on user response to prompts
+*/
+const addEmployee = () => {
+  let rolesInfo;
+  let managersInfo;
+  return fetchRoles()
+  .then( info => {
+    rolesInfo = info;
+    return fetchManagers();
+  } )
+  .then( info => {
+    managersInfo = info;
+    const roleNames = rolesInfo.map( role => role.title );
+    const managerNames = managersInfo.map( manager => manager.manager_name );
+    return inquirer
+    .prompt( [
+      {
+        type : "input",
+        message : "What is the employee's first name?",
+        name : "fname"
+      },
+      {
+        type : "input",
+        message : "What is the employee's last name?",
+        name : "lname"
+      },
+      {
+        type : "list",
+        message : "What is the employee's role?",
+        name : "roleName",
+        choices : roleNames
+      },
+      {
+        type : "list",
+        message : "Who is the employee's manager?",
+        name : "managerName",
+        choices : managerNames
+      }
+    ] )
+    .then( answers => {
+      const { fname, lname, roleName, managerName } = answers;
+      const { id : manager_id } = managersInfo.find( manager => manager.manager_name === managerName );
+      const { id : role_id } = rolesInfo.find( role => role.title === roleName );
+      const queryString =
+      `INSERT INTO employees( first_name, last_name, role_id, manager_id )
+      VALUES ( $1, $2, $3, $4 )`;
+      return new Promise( ( resolve, reject ) => {
+        pool.query( queryString, [ fname, lname, role_id, manager_id ], ( error, results ) => {
+          if( error ) reject( error );
+          console.log( `New employee added: ${ fname } ${ lname }` );
+          resolve();
+        } );
+      } );
+    } )
+  } )
+}
+
 module.exports = {
   promptTasks,
   viewAllDepartments,
   viewAllRoles,
   viewAllEmployees,
   addDepartment,
-  addRole
+  addRole,
+  addEmployee
 }
