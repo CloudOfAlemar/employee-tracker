@@ -7,13 +7,14 @@ const {
   viewAllDepartments,
   viewAllRoles,
   viewAllEmployees,
-  addDepartment
+  addDepartment,
+  addRole
 } = require( "./modules/inquirerPrompts" );
 
 const recursiveTasksPrompt = () => {
-  return new Promise( ( resolve, reject ) => {
-    promptTasks()
-    .then( answers => {
+  return promptTasks()
+  .then( answers => {
+    return new Promise( ( resolve, reject ) => {
       if( answers.task === "Quit" ) {
         console.log( "Process finished..." );
         resolve();
@@ -37,9 +38,14 @@ const recursiveTasksPrompt = () => {
         .then( () => {
           resolve( recursiveTasksPrompt() );
         } );
+      } else if( answers.task === "Add a Role" ) {
+        addRole()
+        .then( () => {
+          resolve( recursiveTasksPrompt() );
+        } );
       }
-    });
-  } );
+    } );
+  });
 }
 
 recursiveTasksPrompt()
