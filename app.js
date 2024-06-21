@@ -11,6 +11,12 @@ const {
   addRole
 } = require( "./modules/inquirerPrompts" );
 
+/*
+  Recursive Tasks Prompt
+    1). prompt for a task recursively if the user input choice
+        is not Quit
+    2). check answers.task and run corresponding function
+*/
 const recursiveTasksPrompt = () => {
   return promptTasks()
   .then( answers => {
@@ -48,6 +54,9 @@ const recursiveTasksPrompt = () => {
   });
 }
 
+/*
+  End Process when user selects Quit
+*/
 recursiveTasksPrompt()
 .then( () => {
   process.exit();

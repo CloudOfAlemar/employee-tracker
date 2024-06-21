@@ -19,6 +19,7 @@ pool.connect();
  
 /*
   Prompt for a Task
+    1). prompt a user for a task
 */
 const promptTasks = function() {
   return inquirer
@@ -43,6 +44,9 @@ const promptTasks = function() {
 
 /*
   View all Departments
+    1). pool.query makes a query to the database and gets
+        info
+    2). promise is returned
 */
 const viewAllDepartments = () => {
   return new Promise( ( resolve, reject ) => {
@@ -63,14 +67,11 @@ const viewAllRoles = () => {
     const queryString =
     `SELECT r.title AS job_title, r.id AS role_id, d.name AS department_name, r.salary AS salary
     FROM roles r JOIN  departments d ON r.department = d.id`;
-    pool.query(
-      queryString,
-      ( error, { rows } ) => {
-        if( error ) reject( error );
-        console.log( rows );
-        resolve();
-      }
-    );
+    pool.query( queryString, ( error, { rows } ) => {
+      if( error ) reject( error );
+      console.log( rows );
+      resolve();
+    } );
   } );
 }
 
@@ -94,6 +95,9 @@ const viewAllEmployees = () => {
 
 /*
   Add a Department
+    1). Inquirer prompts for a department name
+    2). A query is made to the database and returns
+        the results
 */
 const addDepartment = () => {
   return inquirer
@@ -118,7 +122,9 @@ const addDepartment = () => {
 }
 
 /*
-  Add Role
+  Fetch Departments
+    1). will retrieve the id and name property and values
+        from departements
 */
 const fetchDepartments = () => {
   const queryString = `SELECT id, name FROM departments`;
@@ -130,6 +136,18 @@ const fetchDepartments = () => {
   } );
 }
 
+/*
+  Add Role
+    1). capture the department info so it can be used
+        in the next .then() block
+    2). Create an array that holds all department names
+        and pass them into the inquire prompt as choices
+        for the user to select from
+    3). destructure the role, salary and department variables
+        from the inquirer answers
+    4). get the id of the selected department 
+    5). create a role by passing the role, salary and id variables
+*/
 const addRole = () => {
   let departmentInfo;
   return fetchDepartments()
@@ -165,7 +183,7 @@ const addRole = () => {
     return new Promise( ( resolve, reject ) => {
       pool.query( queryString, [ role, salary, id ], ( error, results ) => {
         if( error ) reject();
-        console.log( "Role Created..." );
+        console.log( `${ role } Role Created...` );
         resolve();
       } );
     } );
