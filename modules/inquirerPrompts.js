@@ -95,9 +95,35 @@ const viewAllEmployees = () => {
   } );
 }
 
+/*
+  Add a Department
+*/
+const addDepartment = () => {
+  return new Promise( ( resolve, reject ) => {
+    inquirer
+    .prompt( [
+      {
+        type : "input",
+        message : "What is the name of the department?",
+        name : "department"
+      }
+    ] )
+    .then( answers => {
+      const queryString =
+      `INSERT INTO departments( name ) VALUES ( $1 )`;
+      pool.query( queryString, [ answers.department ], ( error, result ) => {
+        if( error ) reject( error );
+        console.log( `${ answers.department } department was created...` );
+        resolve();
+      } );
+    } )
+  } );
+}
+
 module.exports = {
   promptTasks,
   viewAllDepartments,
   viewAllRoles,
-  viewAllEmployees
+  viewAllEmployees,
+  addDepartment
 }
