@@ -3,14 +3,16 @@
   Require Modules
 */
 const { 
-  promptTasks,
   viewAllDepartments,
   viewAllRoles,
   viewAllEmployees,
   addDepartment,
   addRole,
-  addEmployee
+  addEmployee,
+  updateEmployeeRole
 } = require( "./modules/functions" );
+
+const { promptTasks } = require( "./modules/inquirerPrompts" );
 
 /*
   Recursive Tasks Prompt
@@ -52,6 +54,11 @@ const recursiveTasksPrompt = () => {
         } );
       } else if( answers.task === "Add an Employee" ) {
         addEmployee()
+        .then( () => {
+          resolve( recursiveTasksPrompt() );
+        } );
+      } else if( answers.task === "Update an Employee Role" ) {
+        updateEmployeeRole()
         .then( () => {
           resolve( recursiveTasksPrompt() );
         } );

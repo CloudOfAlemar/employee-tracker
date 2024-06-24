@@ -3,44 +3,14 @@
   Require Modules
 */
 const inquirer = require( "inquirer" );
-const { Pool } = require( "pg" );
+const { pool } = require( "./connection" );
 
 /*
-  Connect to Database
+  Connect to database
 */
-const pool = new Pool( {
-  user : "",
-  password : "",
-  host : "localhost",
-  database : "employee_db"
-} );
-
 pool.connect();
  
-/*
-  Prompt for a Task
-    1). prompt a user for a task
-*/
-const promptTasks = function() {
-  return inquirer
-  .prompt( [
-    {
-      type : "list",
-      message : "What would you like to do?",
-      name : "task",
-      choices : [
-        "View all Departments",
-        "View all Roles",
-        "View all Employees",
-        "Add a Department",
-        "Add a Role",
-        "Add an Employee",
-        "Update an Employee Role",
-        "Quit"
-      ]
-    }
-  ] );
-}
+
 
 /*
   View all Departments
@@ -279,12 +249,78 @@ const addEmployee = () => {
   } )
 }
 
+const fetchEmployee = () => {
+  const queryString = `SELECT * FROM employees`;
+  return new Promise( ( resolve, reject ) => {
+    pool.query( queryString, ( error, { rows } ) => {
+      if( error ) reject( error );
+      resolve( rows );
+    } );
+  } );
+}
+
+const updateEmployeeRole = () => {
+  let employeeInfo;
+  let rolesInfo;
+  return fetchEmployee()
+  .then( info => {
+    employeeInfo = info;
+    return fetchRoles();
+  } )
+  .then( info => {
+    rolesInfo = info;
+    const employeeNames = employeeInfo.map( empInfo => `${ empInfo.first_name } ${ empInfo.last_name }` );
+    const roleTitles = rolesInfo.map( roleInfo => roleInfo.title );
+    return inquirer
+    .prompt( [
+      {
+        type : "list",
+        message : "Which employee's role would you like to Update?",
+        name : "employee",
+        choices : employeeNames
+      },
+      {
+        type : "list",
+        message : "Which role do you want to assign the selected employee?",
+        name : "role",
+        choices : roleTitles
+      }
+    ] );
+  } )
+  .then( answers => {
+    return new Promise( ( resolve, reject ) => {
+      const queryString = `SELECT id FROM roles WHERE roles.title = $1`;
+      pool.query( 
+        queryString,
+        [ answers.role ],
+        ( error, { rows } ) => {
+        if( error ) reject( error );
+        answers.roleId = rows[ 0 ].id;
+        resolve( answers );
+      } );
+    } )
+    .then( answers => {
+      const { employee, roleId } = answers;
+      const [ fname, lname ] = employee.split( " " );
+      return new Promise( ( resolve, reject ) => {
+        const queryString = 
+        `UPDATE employees SET role_id = $1 
+        WHERE first_name = $2 AND last_name = $3`;
+        pool.query( queryString, [ roleId, fname, lname ], ( error, results ) => {
+          if( error ) reject();
+          resolve();
+        } );
+      } );
+    } );
+  } )
+}
+
 module.exports = {
-  promptTasks,
   viewAllDepartments,
   viewAllRoles,
   viewAllEmployees,
   addDepartment,
   addRole,
-  addEmployee
+  addEmployee,
+  updateEmployeeRole
 }
