@@ -2,9 +2,6 @@
 /*
   Require Modules
 */
-const inquirer = require( "inquirer" );
-const { pool } = require( "./connection" );
-
 const {
   promptNewDepartment,
   promptNewRole,
@@ -24,13 +21,11 @@ const {
   updateRole
 } = require( "./queries" );
 
-/*
-  Connect to database
-*/
-pool.connect();
 
 /*
   Add a Department
+    1). Prompt for a new department
+    2). Insert that new department into the database
 */
 const addDepartment = () => {
   return promptNewDepartment()
@@ -41,15 +36,15 @@ const addDepartment = () => {
 
 /*
   Add Role
-    1). capture the department info so it can be used
-        in the next .then() block
-    2). Create an array that holds all department names
-        and pass them into the inquire prompt as choices
-        for the user to select from
-    3). destructure the role, salary and department variables
-        from the inquirer answers
-    4). get the id of the selected department 
-    5). create a role by passing the role, salary and id variables
+    1). Create the departmentInfo variable to hold the value
+        coming back from the queryDepartments() function
+    2). Create the departmentNames variable to hold the names of
+        the departments. This array will be used in the promptNewRole
+        function
+    3). Capture the role, salary and department variables from the answers
+        that are returned from the promptNewRole function
+    4). Capture the id from the department
+    5). Insert the new Role into the database
 */
 const addRole = () => {
   let departmentInfo;
@@ -68,9 +63,15 @@ const addRole = () => {
 
 /*
   Add Employee
-    1). use fetchRoles and fetchManagers to assign the rolesInfo
-        and managersInfo variables
-    2). Create employee based on user response to prompts
+    1). Create the rolesInfo and managersInfo variables to hold
+        the values of queryRoles and queryManagers
+    2). Create roleNames and managerNames variables to pass into
+        the promptNewEmployee function
+    3). Capture the fname, lname, roleName, managerName from the answers
+        that are returned from the promptNewEmployee function
+    4). Find the manager_id and the role_id from the variables created
+        in step 1).
+    5). Insert the new Employee into the database
 */
 const addEmployee = () => {
   let rolesInfo;
@@ -94,6 +95,15 @@ const addEmployee = () => {
   } )
 }
 
+/*
+  Update Employee Role
+    1). Create the employeeInfo and rolesInfo variables to hold the values
+        of the queryEmployee() and queryRoles() functions
+    2). Create the employeeNames and roleTitles arrays to use in promptChangeRole()
+        function
+    3). Use the queryRoleId() to add a role_id property into answers
+    4). Update the employee role in the database
+*/
 const updateEmployeeRole = () => {
   let employeeInfo;
   let rolesInfo;
@@ -118,6 +128,9 @@ const updateEmployeeRole = () => {
   } )
 }
 
+/*
+  Export functions
+*/
 module.exports = {
   addDepartment,
   addRole,

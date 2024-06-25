@@ -3,7 +3,6 @@ const inquirer = require( "inquirer" );
 
 /*
   Prompt for a Task
-    1). prompt a user for a task
 */
 const promptTasks = function() {
   return inquirer
@@ -26,6 +25,9 @@ const promptTasks = function() {
   ] );
 }
 
+/*
+  Prompt New Department
+*/
 const promptNewDepartment = () => {
   return inquirer
   .prompt( [
@@ -37,6 +39,9 @@ const promptNewDepartment = () => {
   ] )
 }
 
+/*
+  Prompt New Role
+*/
 const promptNewRole = departmentNames => {
   return inquirer
   .prompt( [
@@ -59,6 +64,9 @@ const promptNewRole = departmentNames => {
   ] )
 }
 
+/*
+  Prompt New Employee
+*/
 const promptNewEmployee = ( roleNames, managerNames ) => {
   return inquirer
   .prompt( [
@@ -108,6 +116,9 @@ const promptChangeRole = ( employeeNames, roleTitles ) => {
   ] );
 }
 
+/*
+  Export Functions
+*/
 module.exports = {
   promptTasks,
   promptNewDepartment,

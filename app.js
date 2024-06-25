@@ -19,9 +19,11 @@ const {
 
 /*
   Recursive Tasks Prompt
-    1). prompt for a task recursively if the user input choice
-        is not Quit
-    2). check answers.task and run corresponding function
+    1). Check the answers that are returned by the promptTask() function
+    2). Run the corresponding function according to the value of the
+        answers.task
+    3). Call the recursiveTasksPrompt function within itself as long as
+        the user doesn't select Quit
 */
 const recursiveTasksPrompt = () => {
   return promptTasks()
@@ -33,19 +35,19 @@ const recursiveTasksPrompt = () => {
       } else if( answers.task === "View all Departments" ) {
         queryDepartments()
         .then( departments => {
-          console.log( departments );
+          console.table( departments );
           resolve( recursiveTasksPrompt() );
         } );
       } else if( answers.task === "View all Roles" ) {
         queryRoles()
         .then( roles => {
-          console.log( roles );
+          console.table( roles );
           resolve( recursiveTasksPrompt() );
         } );
       } else if( answers.task === "View all Employees" ) {
         queryEmployeesSpecific()
         .then( employees => {
-          console.log( employees );
+          console.table( employees );
           resolve( recursiveTasksPrompt() );
         } );
       } else if( answers.task === "Add a Department" ) {

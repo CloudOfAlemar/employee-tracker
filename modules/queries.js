@@ -1,5 +1,13 @@
 
+/*
+  Require Modules
+*/
 const { pool } = require( "./connection" );
+
+/*
+  Connect to database
+*/
+pool.connect();
 
 /*
   Query Departments
@@ -140,7 +148,6 @@ const insertNewEmployee = ( fname, lname, role_id, manager_id ) => {
 
 /*
   Update Employee Role
-  Change name
 */
 const updateRole = ( roleId, fname, lname ) => {
   return new Promise( ( resolve, reject ) => {
@@ -155,6 +162,9 @@ const updateRole = ( roleId, fname, lname ) => {
   } );
 }
 
+/*
+  Export Functions
+*/
 module.exports = {
   queryDepartments,
   queryRoles,
