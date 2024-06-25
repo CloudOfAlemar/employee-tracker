@@ -2,10 +2,7 @@
 /*
   Require Modules
 */
-const { 
-  viewAllDepartments,
-  viewAllRoles,
-  viewAllEmployees,
+const {
   addDepartment,
   addRole,
   addEmployee,
@@ -13,6 +10,12 @@ const {
 } = require( "./modules/functions" );
 
 const { promptTasks } = require( "./modules/inquirerPrompts" );
+
+const {
+  queryDepartments,
+  queryRoles,
+  queryEmployeesSpecific
+} = require( "./modules/queries" );
 
 /*
   Recursive Tasks Prompt
@@ -28,18 +31,21 @@ const recursiveTasksPrompt = () => {
         console.log( "Process finished..." );
         resolve();
       } else if( answers.task === "View all Departments" ) {
-        viewAllDepartments()
-        .then( () => {
+        queryDepartments()
+        .then( departments => {
+          console.log( departments );
           resolve( recursiveTasksPrompt() );
         } );
       } else if( answers.task === "View all Roles" ) {
-        viewAllRoles()
-        .then( () => {
+        queryRoles()
+        .then( roles => {
+          console.log( roles );
           resolve( recursiveTasksPrompt() );
         } );
       } else if( answers.task === "View all Employees" ) {
-        viewAllEmployees()
-        .then( () => {
+        queryEmployeesSpecific()
+        .then( employees => {
+          console.log( employees );
           resolve( recursiveTasksPrompt() );
         } );
       } else if( answers.task === "Add a Department" ) {

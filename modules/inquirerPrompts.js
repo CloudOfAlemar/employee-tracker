@@ -26,6 +26,92 @@ const promptTasks = function() {
   ] );
 }
 
+const promptNewDepartment = () => {
+  return inquirer
+  .prompt( [
+    {
+      type : "input",
+      message : "What is the name of the department?",
+      name : "department"
+    }
+  ] )
+}
+
+const promptNewRole = departmentNames => {
+  return inquirer
+  .prompt( [
+    {
+      type : "input",
+      message : "What is the name of the Role?",
+      name : "role"
+    },
+    {
+      type : "input",
+      message : "What is the Salary of the Role?",
+      name : "salary"
+    },
+    {
+      type : "list",
+      message : "Which Department does the Role belong to?",
+      name : "department",
+      choices : departmentNames
+    }
+  ] )
+}
+
+const promptNewEmployee = ( roleNames, managerNames ) => {
+  return inquirer
+  .prompt( [
+    {
+      type : "input",
+      message : "What is the employee's first name?",
+      name : "fname"
+    },
+    {
+      type : "input",
+      message : "What is the employee's last name?",
+      name : "lname"
+    },
+    {
+      type : "list",
+      message : "What is the employee's role?",
+      name : "roleName",
+      choices : roleNames
+    },
+    {
+      type : "list",
+      message : "Who is the employee's manager?",
+      name : "managerName",
+      choices : managerNames
+    }
+  ] )
+}
+
+/*
+  Prompt Change Role
+*/
+const promptChangeRole = ( employeeNames, roleTitles ) => {
+  return inquirer
+  .prompt( [
+    {
+      type : "list",
+      message : "Which employee's role would you like to Update?",
+      name : "employee",
+      choices : employeeNames
+    },
+    {
+      type : "list",
+      message : "Which role do you want to assign the selected employee?",
+      name : "role",
+      choices : roleTitles
+    }
+  ] );
+}
+
 module.exports = {
-  promptTasks
+  promptTasks,
+  promptNewDepartment,
+  promptNewRole,
+  promptNewEmployee,
+  promptChangeRole
 }
